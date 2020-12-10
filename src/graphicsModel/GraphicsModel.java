@@ -8,7 +8,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.RectangularShape;
 import java.util.Observable;
 import semafor.ColorEnum;
-import static semafor.ColorEnum.TGreenYellowRed;
+import static semafor.ColorEnum.GreenYellowTRed;
 
 public class GraphicsModel extends Observable {
 
@@ -21,7 +21,7 @@ public class GraphicsModel extends Observable {
 
     public GraphicsModel() {
         Point2D loc = new Point2D.Double();
-        colorEnum = TGreenYellowRed;
+        colorEnum = GreenYellowTRed;
         //oneShape.setFrame(loc, size);
     }
 

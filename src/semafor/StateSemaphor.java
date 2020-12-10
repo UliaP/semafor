@@ -25,11 +25,12 @@ public class StateSemaphor implements Runnable {
         green = new Green();
         red = new Red();
         yellow = new Yellow();
-        state = green;
-        oldState = yellow;
+        nothing = new Nothing();
+        state = red;
+        oldState = red;
         time = 10;
         gm = model;
-        colorEnum = ColorEnum.Nothing;
+        colorEnum = ColorEnum.GreenYellowTRed;
         suspendFlag = false;
     }
 
@@ -38,14 +39,18 @@ public class StateSemaphor implements Runnable {
     }
 
     public void changeState() {
-        state.changeColor();
-        gm.setColor(colorEnum);
+        if (colorEnum.equals(colorEnum.TGreenYellowRed) || colorEnum.equals(colorEnum.Nothing)) {
+            blink();
+        } else {
+            state.changeColor();
+            gm.setColor(colorEnum);
+        }
     }
     
     public void blink() {
         if (colorEnum.equals(colorEnum.Nothing)) {
             state = green;
-            colorEnum = ColorEnum.GreenYellowTRed;
+            colorEnum = ColorEnum.TGreenYellowRed;
         } else {
             state = nothing;
             colorEnum = ColorEnum.Nothing;
@@ -56,7 +61,7 @@ public class StateSemaphor implements Runnable {
     @Override
     public void run() {
         for (int i = 0; i < 200; i++) {
-            blink();
+            changeState();
             stop();
         }
 
@@ -64,7 +69,7 @@ public class StateSemaphor implements Runnable {
 
     private void stop() {
         try {
-            Thread.sleep(200);
+            Thread.sleep(500);
             synchronized (this) {
                 while (suspendFlag) {
                     wait();
@@ -92,9 +97,9 @@ public class StateSemaphor implements Runnable {
 
         @Override
         public void changeColor() {
-            oldState = green;
-            state = nothing;
-            colorEnum = Nothing;
+            oldState = nothing;
+            state = red;
+            colorEnum = GreenYellowTRed;
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
@@ -118,6 +123,27 @@ public class StateSemaphor implements Runnable {
         }
     }
 
+    public class Yellow implements ChangeColor {
+
+        @Override
+        public void changeColor() {
+            if (oldState == red) {
+                oldState = yellow;
+                state = green;
+                colorEnum = TGreenYellowRed;
+            } else {
+                oldState = yellow;
+                state = red;
+                colorEnum = GreenYellowTRed;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Yellow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public class Red implements ChangeColor {
 
         @Override
@@ -132,26 +158,5 @@ public class StateSemaphor implements Runnable {
             }
         }
 
-    }
-
-    public class Yellow implements ChangeColor {
-
-        @Override
-        public void changeColor() {
-            if (oldState == red) {
-                state = green;
-                oldState = yellow;
-                colorEnum = TGreenYellowRed;
-            } else {
-                state = red;
-                oldState = yellow;
-                colorEnum = GreenYellowTRed;
-            }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Yellow.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 }

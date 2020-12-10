@@ -10,9 +10,9 @@ package semafor;
  * @author Netbeans
  */
 public enum ColorEnum {
-    TGreenYellowRed(true,false,false),
+    TGreenYellowRed(false,false,true),
     GreenTYellowRed(false,true,false),
-    GreenYellowTRed(false,false,true),
+    GreenYellowTRed(true,false,false),
     Nothing(false, false, false);
 
     private ColorEnum(boolean green, boolean yellow, boolean red) {
